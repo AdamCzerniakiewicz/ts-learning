@@ -63,7 +63,11 @@ var App;
             }
         }
     }
-    const projectState = ProjectState.getInstance();
+    App.ProjectState = ProjectState;
+    App.projectState = ProjectState.getInstance();
+})(App || (App = {}));
+var App;
+(function (App) {
     function validate(validatableInput) {
         let isValid = true;
         if (validatableInput.required) {
@@ -83,6 +87,10 @@ var App;
         }
         return isValid;
     }
+    App.validate = validate;
+})(App || (App = {}));
+var App;
+(function (App) {
     function autobind(_, _2, descriptor) {
         const originalMethod = descriptor.value;
         const adjDescriptor = {
@@ -94,6 +102,10 @@ var App;
         };
         return adjDescriptor;
     }
+    App.autobind = autobind;
+})(App || (App = {}));
+var App;
+(function (App) {
     class Component {
         constructor(templateId, hostElementId, insertAtStart, newElementId) {
             this.templateElement = document.getElementById(templateId);
@@ -109,7 +121,11 @@ var App;
             this.hostElement.insertAdjacentElement(insertAtBeginning ? 'afterbegin' : 'beforeend', this.element);
         }
     }
-    class ProjectItem extends Component {
+    App.Component = Component;
+})(App || (App = {}));
+var App;
+(function (App) {
+    class ProjectItem extends App.Component {
         get persons() {
             if (this.project.people === 1) {
                 return '1 person';
@@ -140,9 +156,13 @@ var App;
         }
     }
     __decorate([
-        autobind
+        App.autobind
     ], ProjectItem.prototype, "dragStartHandler", null);
-    class ProjectList extends Component {
+    App.ProjectItem = ProjectItem;
+})(App || (App = {}));
+var App;
+(function (App) {
+    class ProjectList extends App.Component {
         constructor(type) {
             super('project-list', 'app', false, `${type}-projects`);
             this.type = type;
@@ -159,7 +179,7 @@ var App;
         }
         dropHandler(event) {
             const prjId = event.dataTransfer.getData('text/plain');
-            projectState.moveProject(prjId, this.type === 'active' ? App.ProjectStatus.Active : App.ProjectStatus.Finished);
+            App.projectState.moveProject(prjId, this.type === 'active' ? App.ProjectStatus.Active : App.ProjectStatus.Finished);
         }
         dragLeaveHandler(_) {
             const listEl = this.element.querySelector('ul');
@@ -169,7 +189,7 @@ var App;
             this.element.addEventListener('dragover', this.dragOverHandler);
             this.element.addEventListener('dragleave', this.dragLeaveHandler);
             this.element.addEventListener('drop', this.dropHandler);
-            projectState.addListener((projects) => {
+            App.projectState.addListener((projects) => {
                 const relevantProjects = projects.filter(prj => {
                     if (this.type === 'active') {
                         return prj.status === App.ProjectStatus.Active;
@@ -189,20 +209,24 @@ var App;
             const listEl = document.getElementById(`${this.type}-projects-list`);
             listEl.innerHTML = '';
             for (const prjItem of this.assignedProjects) {
-                new ProjectItem(this.element.querySelector('ul').id, prjItem);
+                new App.ProjectItem(this.element.querySelector('ul').id, prjItem);
             }
         }
     }
     __decorate([
-        autobind
+        App.autobind
     ], ProjectList.prototype, "dragOverHandler", null);
     __decorate([
-        autobind
+        App.autobind
     ], ProjectList.prototype, "dropHandler", null);
     __decorate([
-        autobind
+        App.autobind
     ], ProjectList.prototype, "dragLeaveHandler", null);
-    class ProjectInput extends Component {
+    App.ProjectList = ProjectList;
+})(App || (App = {}));
+var App;
+(function (App) {
+    class ProjectInput extends App.Component {
         constructor() {
             super('project-input', 'app', true, 'user-input');
             this.titleInputElement = this.element.querySelector('#title');
@@ -233,7 +257,7 @@ var App;
                 min: 1,
                 max: 5,
             };
-            if (!validate(titleValidatable) || !validate(descriptionValidatable) || !validate(peopleValidatable)) {
+            if (!App.validate(titleValidatable) || !App.validate(descriptionValidatable) || !App.validate(peopleValidatable)) {
                 alert('Invalid input, please try again!');
                 return;
             }
@@ -251,16 +275,20 @@ var App;
             const userInput = this.gatherUserInput();
             if (Array.isArray(userInput)) {
                 const [title, desc, people] = userInput;
-                projectState.addProject(title, desc, people);
+                App.projectState.addProject(title, desc, people);
                 this.clearInputs();
             }
         }
     }
     __decorate([
-        autobind
+        App.autobind
     ], ProjectInput.prototype, "submitHandler", null);
-    new ProjectInput();
-    new ProjectList('active');
-    new ProjectList('finished');
+    App.ProjectInput = ProjectInput;
+})(App || (App = {}));
+var App;
+(function (App) {
+    new App.ProjectInput();
+    new App.ProjectList('active');
+    new App.ProjectList('finished');
 })(App || (App = {}));
 //# sourceMappingURL=bundle.js.map
