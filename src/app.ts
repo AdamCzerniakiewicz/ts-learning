@@ -13,3 +13,5 @@ namespace App {
 	new ProjectList('active')
 	new ProjectList('finished')
 }
+
+// dupa dupa
