@@ -1,3 +1,6 @@
 /node_modules
 /.vscode
 *.json
+webpack
+webpack.config.js
+webpack.config.prod.js
